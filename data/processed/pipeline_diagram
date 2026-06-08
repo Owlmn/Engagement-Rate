@@ -1,0 +1,66 @@
+digraph ML_Pipeline {
+	dpi=150 fontname=Arial rankdir=TB size="10,14"
+	node [fontname=Arial fontsize=11]
+	edge [fontname=Arial fontsize=9]
+	subgraph cluster_01 {
+		fillcolor="#E8F0FE" fontsize=14 label="01_data_collection.ipynb — СБОР ДАННЫХ" style="rounded,filled"
+		tg_list [label="channel_list.txt
+(632 TG-канала)" fillcolor="#FFF9C4" shape=note]
+		vk_list [label="vk_channel_list.txt
+(379 VK-групп)" fillcolor="#FFF9C4" shape=note]
+		tg_collector [label="TelegramCollector
+(Telethon MTProto)
+200 постов · batched · resume" fillcolor="#C8E6C9" shape=box]
+		vk_collector [label="VKCollector
+(VK API)
+200 постов · batched · resume" fillcolor="#C8E6C9" shape=box]
+		tg_csv [label="telegram_posts_raw.csv" fillcolor="#BBDEFB" shape=cylinder]
+		vk_csv [label="vk_posts_raw.csv" fillcolor="#BBDEFB" shape=cylinder]
+		merge [label="pd.concat
++ дедубликация
++ ad_type" fillcolor="#FFCC80" shape=box]
+		all_raw [label="all_posts_raw.csv
+(47 000+ постов)" fillcolor="#BBDEFB" shape=cylinder]
+		tg_list -> tg_collector
+		vk_list -> vk_collector
+		tg_collector -> tg_csv
+		vk_collector -> vk_csv
+		tg_csv -> merge
+		vk_csv -> merge
+		merge -> all_raw
+	}
+	subgraph cluster_02 {
+		fillcolor="#E8F0FE" fontsize=14 label="02_eda_preprocessing.ipynb — EDA + FEATURE ENGINEERING" style="rounded,filled"
+		eda [label="Расчёт ERR · Очистка · EDA
+Feature Engineering
++20 признаков:
+временные, текстовые,
+логарифмы, агрегаты канала" fillcolor="#C8E6C9" shape=box]
+		eda_csv [label="eda_full.csv
+(все 46 колонок)" fillcolor="#BBDEFB" shape=cylinder]
+		model_csv [label="model_ready.csv
+(29 признаков + таргет
+без data leakage)" fillcolor="#A5D6A7" shape=cylinder]
+		eda -> eda_csv
+		eda -> model_csv
+	}
+	subgraph cluster_03 {
+		fillcolor="#E8F0FE" fontsize=14 label="03_modeling.ipynb — ОБУЧЕНИЕ МОДЕЛИ" style="rounded,filled"
+		split [label="train_test_split
+80/20" fillcolor="#FFCC80" shape=box]
+		models [label="Baseline: Mean, LR, RF
+CatBoost + GridSearch (108 комб.)
+LightGBM, XGBoost" fillcolor="#FFCC80" shape=box]
+		eval [label="Метрики: R², MAE, RMSE
+Residual Plot
+Feature Importance
+5-Fold CV" fillcolor="#FFCC80" shape=box]
+		save [label="catboost_err_model.cbm
+model_meta.json" fillcolor="#C8E6C9" shape=cylinder]
+		split -> models
+		models -> eval
+		eval -> save
+	}
+	all_raw -> eda [label="данные" style=bold]
+	model_csv -> split [label="признаки" style=bold]
+}

@@ -1,0 +1,55 @@
+{
+  "features": [
+    "followers_count",
+    "log_followers",
+    "hour",
+    "day_of_week",
+    "is_weekend",
+    "month",
+    "text_length",
+    "clean_text_length",
+    "n_hashtags",
+    "n_links",
+    "n_mentions",
+    "n_emojis",
+    "has_photo",
+    "has_video",
+    "has_document",
+    "has_any_media",
+    "has_link",
+    "has_hashtag",
+    "is_advert",
+    "is_telegram",
+    "text_density",
+    "channel_avg_err",
+    "channel_median_err",
+    "channel_posts_total",
+    "channel_posts_per_day",
+    "channel_avg_views",
+    "channel_avg_text_len"
+  ],
+  "cat_features": [
+    "hour",
+    "day_of_week",
+    "month",
+    "is_weekend",
+    "is_advert",
+    "is_telegram",
+    "has_photo",
+    "has_video",
+    "has_document",
+    "has_link",
+    "has_hashtag",
+    "has_any_media"
+  ],
+  "best_params": {
+    "learning_rate": 0.1,
+    "depth": 8,
+    "l2_leaf_reg": 1,
+    "iterations": 700
+  },
+  "metrics": {
+    "R2": 0.819,
+    "MAE_ERR%": 0.65
+  }
+}
